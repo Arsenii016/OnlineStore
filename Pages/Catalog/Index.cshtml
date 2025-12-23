@@ -1,0 +1,116 @@
+@page
+@model OnlineStore.Pages.Catalog.IndexModel
+@{
+    ViewData["Title"] = "Каталог товаров";
+}
+
+<h1 class="mb-4">Каталог товаров</h1>
+
+<!-- Сообщение (например, о добавлении в корзину) -->
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @TempData["Message"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<div class="row">
+    <!-- Боковая панель с фильтрами — видна ТОЛЬКО на десктопе (>=1200px) -->
+    <div class="col-lg-3 d-none d-lg-block">
+        <h4>Фильтр по категориям</h4>
+        <ul class="list-group">
+            <li class="list-group-item @(Model.CategoryId == null ? "active" : "")">
+                <a asp-page="./Index" asp-route-categoryId="">Все товары</a>
+            </li>
+            @foreach (var category in Model.Categories)
+            {
+                <li class="list-group-item @(Model.CategoryId == category.Id ? "active" : "")">
+                    <a asp-page="./Index" asp-route-categoryId="@category.Id">@category.Name</a>
+                </li>
+            }
+        </ul>
+    </div>
+
+    <!-- Список товаров -->
+    <div class="col-12 col-lg-9">
+        <div class="product-grid">
+            @foreach (var product in Model.Products)
+            {
+                <div class="product-card text-center p-3 border rounded shadow-sm mb-4">
+                    @if (!string.IsNullOrEmpty(product.ImageUrl))
+                    {
+                        <img src="@product.ImageUrl" alt="@product.Name" class="img-fluid mb-3" style="max-height: 200px; object-fit: contain;" />
+                    }
+                    else
+                    {
+                        <img src="/images/placeholder-product.jpg" alt="Нет фото" class="img-fluid mb-3" style="max-height: 200px;" />
+                    }
+
+                    <h5 class="mb-2">@product.Name</h5>
+
+                    @if (!string.IsNullOrEmpty(product.Description))
+                    {
+                        <p class="text-muted small mb-2">@product.Description</p>
+                    }
+
+                    @if (product.Category != null)
+                    {
+                        <p class="text-muted small">Категория: @product.Category.Name</p>
+                    }
+
+                    <p class="h4 text-primary mb-3">@product.Price.ToString("F2") ₽</p>
+
+                    @if (product.Stock > 0)
+                    {
+                        <!-- ИСПРАВЛЕННАЯ КНОПКА: отправляет POST на /Cart/Index с обработчиком Add -->
+                        <form method="post" asp-page="/Cart/Index" asp-page-handler="Add">
+                            <input type="hidden" name="productId" value="@product.Id" />
+                            <button type="submit" class="btn btn-success btn-lg w-100">
+                                В корзину
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <button class="btn btn-secondary btn-lg w-100" disabled>Нет в наличии</button>
+                    }
+                </div>
+            }
+        </div>
+
+        @if (Model.Products.Count == 0)
+        {
+            <p class="text-center mt-5">Товары не найдены.</p>
+        }
+
+        <!-- Пагинация -->
+        @if (Model.TotalPages > 1)
+        {
+            <nav aria-label="Пагинация" class="mt-5">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item @(Model.PageNumber == 1 ? "disabled" : "")">
+                        <a class="page-link" asp-page="./Index"
+                           asp-route-categoryId="@Model.CategoryId"
+                           asp-route-pageNumber="@(Model.PageNumber - 1)">Предыдущая</a>
+                    </li>
+
+                    @for (int i = 1; i <= Model.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                            <a class="page-link" asp-page="./Index"
+                               asp-route-categoryId="@Model.CategoryId"
+                               asp-route-pageNumber="@i">@i</a>
+                        </li>
+                    }
+
+                    <li class="page-item @(Model.PageNumber == Model.TotalPages ? "disabled" : "")">
+                        <a class="page-link" asp-page="./Index"
+                           asp-route-categoryId="@Model.CategoryId"
+                           asp-route-pageNumber="@(Model.PageNumber + 1)">Следующая</a>
+                    </li>
+                </ul>
+            </nav>
+        }
+    </div>
+</div>

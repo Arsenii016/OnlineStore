@@ -1,0 +1,38 @@
+@page
+@model CreateModel
+
+
+<h1>Add product</h1>
+
+<form method="post">
+    <div>
+        <label asp-for="Product.Name"></label>
+        <input asp-for="Product.Name" />
+        <span asp-validation-for="Product.Name"></span>
+    </div>
+
+    <div>
+        <label asp-for="Product.Price"></label>
+        <input asp-for="Product.Price" />
+        <span asp-validation-for="Product.Price"></span>
+    </div>
+
+    <div>
+        <label asp-for="Product.Stock"></label>
+        <input asp-for="Product.Stock" />
+        <span asp-validation-for="Product.Stock"></span>
+    </div>
+
+    <div>
+        <label asp-for="Product.Description"></label>
+        <textarea asp-for="Product.Description"></textarea>
+        <span asp-validation-for="Product.Description"></span>
+    </div>
+
+    <button type="submit">Save</button>
+    <a asp-page="./Index">Back</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

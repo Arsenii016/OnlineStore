@@ -1,10 +1,18 @@
 ﻿@page
 @model IndexModel
-@{
-    ViewData["Title"] = "Home page";
-}
+<h1>Добро пожаловать в OnlineStore</h1>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="product-grid">
+    @foreach (var product in Model.Products)
+    {
+        <div class="product-card">
+            <h3>@product.Name</h3>
+            <p>@product.Description</p>
+            <p>Цена: @product.Price ₽</p>
+            <form method="post" asp-page="/Cart" asp-page-handler="Add">
+                <input type="hidden" name="productId" value="@product.Id" />
+                <button type="submit">В корзину</button>
+            </form>
+        </div>
+    }
 </div>

@@ -1,0 +1,24 @@
+@page
+@model OnlineStore.Pages.Account.ProfileModel
+@{
+    ViewData["Title"] = "Личный кабинет";
+}
+
+<h1 class="mb-4">Личный кабинет</h1>
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">Привет, @Model.UserName!</h5>
+        <p class="card-text">Здесь вы можете просмотреть свою информацию и историю заказов.</p>
+    </div>
+</div>
+
+<h3 class="mt-5">История заказов</h3>
+<div class="alert alert-info" role="alert">
+    История заказов пуста.
+</div>
+
+<div class="mt-4">
+    <a asp-page="/Index" class="btn btn-primary">На главную</a>
+    <a asp-page="/Cart/Index" class="btn btn-secondary ms-2">Перейти в корзину</a>
+</div>

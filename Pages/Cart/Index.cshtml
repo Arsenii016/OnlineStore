@@ -1,0 +1,84 @@
+@page
+@model OnlineStore.Pages.Cart.IndexModel
+@{
+    ViewData["Title"] = "Корзина";
+}
+
+<h1 class="mb-4">Корзина</h1>
+
+@if (TempData["Success"] is string success)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        @success
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+@if (!Model.CartItems.Any())
+{
+    <div class="alert alert-info">
+        Ваша корзина пуста.
+    </div>
+    <a asp-page="/Catalog/Index" class="btn btn-primary">Вернуться в каталог</a>
+}
+else
+{
+    <div class="table-responsive">
+        <table class="table table-striped align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Товар</th>
+                    <th>Цена</th>
+                    <th>Количество</th>
+                    <th>Сумма</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.CartItems)
+                {
+                    <tr>
+                        <td>
+                            <strong>@item.Product.Name</strong>
+                            @if (!string.IsNullOrEmpty(item.Product.Description))
+                            {
+                                <br /><small class="text-muted">@item.Product.Description</small>
+                            }
+                        </td>
+                        <td>@item.Product.Price.ToString("F2") ₽</td>
+                        <td>
+                            <form method="post" asp-page-handler="Update" class="d-inline">
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <div class="input-group" style="width: 150px;">
+                                    <button type="submit" name="quantity" value="@(item.Quantity - 1)" class="btn btn-outline-secondary">-</button>
+                                    <input type="text" value="@item.Quantity" class="form-control text-center" readonly />
+                                    <button type="submit" name="quantity" value="@(item.Quantity + 1)" class="btn btn-outline-secondary">+</button>
+                                </div>
+                            </form>
+                        </td>
+                        <td>@((item.Quantity * item.Product.Price).ToString("F2")) ₽</td>
+                        <td>
+                            <form method="post" asp-page-handler="Update" class="d-inline">
+                                <input type="hidden" name="id" value="@item.Id" />
+                                <button type="submit" name="quantity" value="0" class="btn btn-sm btn-danger">Удалить</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th colspan="3" class="text-end">Итого:</th>
+                    <th>@Model.TotalPrice.ToString("F2") ₽</th>
+                    <th></th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <div class="text-end mt-4">
+        <form method="post" asp-page-handler="Checkout" class="d-inline">
+            <button type="submit" class="btn btn-success btn-lg px-5">Оформить заказ</button>
+        </form>
+    </div>
+}

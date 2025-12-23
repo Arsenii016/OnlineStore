@@ -24,13 +24,21 @@
                             <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link text-dark" asp-page="/Catalog/Index">Каталог</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-page="/Cart/Index">Корзина</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
                         </li>
                     </ul>
+                    <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
     </header>
+
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
@@ -48,5 +56,27 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
 
     @await RenderSectionAsync("Scripts", required: false)
+    <!-- Мобильная нижняя навигация -->
+<div class="mobile-bottom-nav d-lg-none">
+    <div class="container">
+        <div class="row text-center">
+            <div class="col">
+                <a asp-page="/Index" class="nav-link">Главная</a>
+            </div>
+            <div class="col">
+                <a asp-page="/Catalog/Index" class="nav-link">Каталог</a>
+            </div>
+            <div class="col">
+                <a asp-page="/Cart/Index" class="nav-link">Корзина</a>
+            </div>
+            @if (User.Identity.IsAuthenticated)
+            {
+                <div class="col">
+                    <a asp-page="/Account/Profile" class="nav-link">Кабинет</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
 </body>
 </html>
